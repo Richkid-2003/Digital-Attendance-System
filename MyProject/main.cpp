@@ -24,6 +24,30 @@ public:
     }
 };
 
+// --- ATTENDANCE SESSION CLASS (Week 2) ---
+class AttendanceSession {
+private:
+    string courseCode;
+    string date;
+    string startTime;
+    int duration;
+
+public:
+    // Constructor
+    AttendanceSession(string code, string dt, string time, int dur) {
+        courseCode = code;
+        date = dt;
+        startTime = time;
+        duration = dur;
+    }
+
+    // Display Session Details
+    void displaySession() {
+        cout << "Course: " << courseCode << " | Date: " << date 
+             << " | Time: " << startTime << " | Duration: " << duration << " hrs\n";
+    }
+};
+
 // --- GLOBAL VARIABLES ---
 vector<Student> students;
 
@@ -59,7 +83,7 @@ int main() {
     int choice;
     do {
         cout << "\n============================================\n";
-        cout << "   DIGITAL ATTENDANCE SYSTEM (WEEK 1)      \n";
+        cout << "   DIGITAL ATTENDANCE SYSTEM               \n";
         cout << "============================================\n";
         cout << "1. Register Student\n";
         cout << "2. View All Students\n";
