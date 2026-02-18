@@ -48,7 +48,6 @@ public:
 
 // --- GLOBAL VARIABLES ---
 vector<Student> students;
-// NEW: Vector to store sessions
 vector<AttendanceSession> sessions; 
 
 // --- HELPER FUNCTIONS ---
@@ -78,7 +77,6 @@ void viewStudents() {
     }
 }
 
-// NEW: Function to create a lecture session
 void createSession() {
     string code, date, time;
     int duration;
@@ -99,7 +97,6 @@ void createSession() {
     cout << "Session created successfully!\n";
 }
 
-// NEW: Function to view all sessions
 void viewSessions() {
     cout << "\n--- Scheduled Sessions ---\n";
     if (sessions.empty()) {
@@ -121,6 +118,8 @@ int main() {
         cout << "============================================\n";
         cout << "1. Register Student\n";
         cout << "2. View All Students\n";
+        cout << "3. Create Lecture Session\n"; // NEW
+        cout << "4. View All Sessions\n";      // NEW
         cout << "0. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
@@ -128,6 +127,8 @@ int main() {
         switch (choice) {
             case 1: registerStudent(); break;
             case 2: viewStudents(); break;
+            case 3: createSession(); break; // NEW
+            case 4: viewSessions(); break;  // NEW
             case 0: cout << "Exiting program. Goodbye!\n"; break;
             default: cout << "Invalid choice. Please try again.\n";
         }
