@@ -32,14 +32,12 @@ private:
     string startTime;
     int duration;
 
-    // NEW: Internal structure to hold a single attendance record
     struct AttendanceRecord {
         string studentName;
         string studentIndex;
         char status; 
     };
 
-    // NEW: A list of records specific to THIS session
     vector<AttendanceRecord> records;
 
 public:
@@ -55,24 +53,33 @@ public:
              << " | Time: " << startTime << " | Duration: " << duration << " hrs\n";
     }
 
-    // NEW: Core Logic to Mark Attendance
     void markAttendance(vector<Student>& students) {
         if (students.empty()) {
             cout << "No students registered to mark attendance for.\n";
             return;
         }
 
-        records.clear(); // Clear previous records if re-marking
+        records.clear(); 
 
         cout << "\n--- Marking Attendance for " << courseCode << " on " << date << " ---\n";
         cout << "Enter P (Present), A (Absent), or L (Late)\n";
 
         for (int i = 0; i < students.size(); i++) {
             char status;
+            bool valid = false; // NEW: Input validation flag
             
-            cout << "Is " << students[i].getName() << " (" << students[i].getIndexNumber() << ") present? ";
-            cin >> status;
-            status = toupper(status); // Convert to uppercase
+            // NEW: Input Validation Loop
+            do {
+                cout << "Is " << students[i].getName() << " (" << students[i].getIndexNumber() << ") present? (P/A/L): ";
+                cin >> status;
+                status = toupper(status); // Convert to uppercase
+
+                if (status == 'P' || status == 'A' || status == 'L') {
+                    valid = true;
+                } else {
+                    cout << "Invalid input! Please enter P, A, or L.\n";
+                }
+            } while (!valid);
 
             // Save the record
             AttendanceRecord rec;
@@ -148,7 +155,6 @@ void viewSessions() {
     }
 }
 
-// NEW: Helper function to select a session and mark attendance
 void processAttendance() {
     if (sessions.empty()) {
         cout << "Please create a session first.\n";
@@ -178,7 +184,7 @@ int main() {
         cout << "2. View All Students\n";
         cout << "3. Create Lecture Session\n"; 
         cout << "4. View All Sessions\n";      
-        cout << "5. Mark Attendance\n"; // NEW
+        cout << "5. Mark Attendance\n"; 
         cout << "0. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
@@ -188,7 +194,7 @@ int main() {
             case 2: viewStudents(); break;
             case 3: createSession(); break; 
             case 4: viewSessions(); break;  
-            case 5: processAttendance(); break; // NEW
+            case 5: processAttendance(); break; 
             case 0: cout << "Exiting program. Goodbye!\n"; break;
             default: cout << "Invalid choice. Please try again.\n";
         }
