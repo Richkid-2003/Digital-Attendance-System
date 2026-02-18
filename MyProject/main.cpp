@@ -62,17 +62,15 @@ public:
         records.clear(); 
 
         cout << "\n--- Marking Attendance for " << courseCode << " on " << date << " ---\n";
-        cout << "Enter P (Present), A (Absent), or L (Late)\n";
-
+        
         for (int i = 0; i < students.size(); i++) {
             char status;
-            bool valid = false; // NEW: Input validation flag
+            bool valid = false;
             
-            // NEW: Input Validation Loop
             do {
                 cout << "Is " << students[i].getName() << " (" << students[i].getIndexNumber() << ") present? (P/A/L): ";
                 cin >> status;
-                status = toupper(status); // Convert to uppercase
+                status = toupper(status);
 
                 if (status == 'P' || status == 'A' || status == 'L') {
                     valid = true;
@@ -81,7 +79,6 @@ public:
                 }
             } while (!valid);
 
-            // Save the record
             AttendanceRecord rec;
             rec.studentName = students[i].getName();
             rec.studentIndex = students[i].getIndexNumber();
@@ -89,6 +86,33 @@ public:
             records.push_back(rec);
         }
         cout << "Attendance marking complete!\n";
+    }
+
+    // NEW: Generate Attendance Report
+    void generateReport() {
+        if (records.empty()) {
+            cout << "No attendance marked for this session yet.\n";
+            return;
+        }
+
+        int p = 0, a = 0, l = 0;
+
+        cout << "\n--- Attendance Report (" << date << ") ---\n";
+        cout << "Index\t\tStatus\tName\n";
+        cout << "----------------------------------------\n";
+        
+        for (int i = 0; i < records.size(); i++) {
+            cout << records[i].studentIndex << "\t\t" 
+                 << records[i].status << "\t" 
+                 << records[i].studentName << endl;
+
+            if (records[i].status == 'P') p++;
+            else if (records[i].status == 'A') a++;
+            else if (records[i].status == 'L') l++;
+        }
+
+        cout << "----------------------------------------\n";
+        cout << "SUMMARY: Present: " << p << " | Absent: " << a << " | Late: " << l << endl;
     }
 };
 
@@ -173,6 +197,25 @@ void processAttendance() {
     }
 }
 
+// NEW: Helper function to select a session and view its report
+void viewReport() {
+    if (sessions.empty()) {
+        cout << "No sessions available.\n";
+        return;
+    }
+
+    viewSessions();
+    int choice;
+    cout << "Select a session number to view report: ";
+    cin >> choice;
+
+    if (choice > 0 && choice <= sessions.size()) {
+        sessions[choice - 1].generateReport();
+    } else {
+        cout << "Invalid session number.\n";
+    }
+}
+
 // --- MAIN PROGRAM ---
 int main() {
     int choice;
@@ -185,6 +228,7 @@ int main() {
         cout << "3. Create Lecture Session\n"; 
         cout << "4. View All Sessions\n";      
         cout << "5. Mark Attendance\n"; 
+        cout << "6. View Attendance Report\n"; // NEW
         cout << "0. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
@@ -195,6 +239,7 @@ int main() {
             case 3: createSession(); break; 
             case 4: viewSessions(); break;  
             case 5: processAttendance(); break; 
+            case 6: viewReport(); break; // NEW
             case 0: cout << "Exiting program. Goodbye!\n"; break;
             default: cout << "Invalid choice. Please try again.\n";
         }
