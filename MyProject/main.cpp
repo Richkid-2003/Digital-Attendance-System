@@ -24,13 +24,23 @@ public:
     }
 };
 
-// --- ATTENDANCE SESSION CLASS (Week 2) ---
+// --- ATTENDANCE SESSION CLASS (Week 3) ---
 class AttendanceSession {
 private:
     string courseCode;
     string date;
     string startTime;
     int duration;
+
+    // NEW: Internal structure to hold a single attendance record
+    struct AttendanceRecord {
+        string studentName;
+        string studentIndex;
+        char status; 
+    };
+
+    // NEW: A list of records specific to THIS session
+    vector<AttendanceRecord> records;
 
 public:
     AttendanceSession(string code, string dt, string time, int dur) {
@@ -43,6 +53,35 @@ public:
     void displaySession() {
         cout << "Course: " << courseCode << " | Date: " << date 
              << " | Time: " << startTime << " | Duration: " << duration << " hrs\n";
+    }
+
+    // NEW: Core Logic to Mark Attendance
+    void markAttendance(vector<Student>& students) {
+        if (students.empty()) {
+            cout << "No students registered to mark attendance for.\n";
+            return;
+        }
+
+        records.clear(); // Clear previous records if re-marking
+
+        cout << "\n--- Marking Attendance for " << courseCode << " on " << date << " ---\n";
+        cout << "Enter P (Present), A (Absent), or L (Late)\n";
+
+        for (int i = 0; i < students.size(); i++) {
+            char status;
+            
+            cout << "Is " << students[i].getName() << " (" << students[i].getIndexNumber() << ") present? ";
+            cin >> status;
+            status = toupper(status); // Convert to uppercase
+
+            // Save the record
+            AttendanceRecord rec;
+            rec.studentName = students[i].getName();
+            rec.studentIndex = students[i].getIndexNumber();
+            rec.status = status;
+            records.push_back(rec);
+        }
+        cout << "Attendance marking complete!\n";
     }
 };
 
@@ -109,6 +148,25 @@ void viewSessions() {
     }
 }
 
+// NEW: Helper function to select a session and mark attendance
+void processAttendance() {
+    if (sessions.empty()) {
+        cout << "Please create a session first.\n";
+        return;
+    }
+
+    viewSessions();
+    int choice;
+    cout << "Select a session number to mark attendance: ";
+    cin >> choice;
+
+    if (choice > 0 && choice <= sessions.size()) {
+        sessions[choice - 1].markAttendance(students);
+    } else {
+        cout << "Invalid session number.\n";
+    }
+}
+
 // --- MAIN PROGRAM ---
 int main() {
     int choice;
@@ -118,8 +176,9 @@ int main() {
         cout << "============================================\n";
         cout << "1. Register Student\n";
         cout << "2. View All Students\n";
-        cout << "3. Create Lecture Session\n"; // NEW
-        cout << "4. View All Sessions\n";      // NEW
+        cout << "3. Create Lecture Session\n"; 
+        cout << "4. View All Sessions\n";      
+        cout << "5. Mark Attendance\n"; // NEW
         cout << "0. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
@@ -127,8 +186,9 @@ int main() {
         switch (choice) {
             case 1: registerStudent(); break;
             case 2: viewStudents(); break;
-            case 3: createSession(); break; // NEW
-            case 4: viewSessions(); break;  // NEW
+            case 3: createSession(); break; 
+            case 4: viewSessions(); break;  
+            case 5: processAttendance(); break; // NEW
             case 0: cout << "Exiting program. Goodbye!\n"; break;
             default: cout << "Invalid choice. Please try again.\n";
         }
