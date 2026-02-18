@@ -1,3 +1,7 @@
+// ==========================================
+// CAPSTONE PROJECT: DIGITAL ATTENDANCE SYSTEM
+// COURSE: EEE227
+// ==========================================
 #include <iostream>
 #include <vector>
 #include <string>
