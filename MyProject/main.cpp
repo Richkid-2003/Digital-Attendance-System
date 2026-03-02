@@ -270,7 +270,51 @@ void viewReport() {
     if (choice > 0 && choice <= sessions.size()) sessions[choice - 1].generateReport();
     else cout << "Invalid session number.\n";
 }
+// NEW: Function to export a session to Excel (CSV format)
+void exportToExcel() {
+    if (sessions.empty()) {
+        cout << "No sessions available to export.\n";
+        return;
+    }
 
+    viewSessions();
+    int choice;
+    cout << "Select a session number to export to Excel: ";
+    cin >> choice;
+
+    if (choice > 0 && choice <= sessions.size()) {
+        AttendanceSession& current = sessions[choice - 1];
+        
+        // Create a unique filename using the course code and date
+        string filename = current.getCode() + "_" + current.getDate() + ".csv";
+        ofstream excelFile(filename);
+
+        if (excelFile.is_open()) {
+            // Write the Spreadsheet Headers
+            excelFile << "Course Code:," << current.getCode() << "\n";
+            excelFile << "Date:," << current.getDate() << "\n";
+            excelFile << "Time:," << current.getTime() << "\n\n"; // Blank row
+            
+            // Write the Column Titles
+            excelFile << "Index Number,Student Name,Attendance Status\n";
+
+            // Loop through records and write the data
+            for (int i = 0; i < current.records.size(); i++) {
+                excelFile << current.records[i].studentIndex << ","
+                          << current.records[i].studentName << ","
+                          << current.records[i].status << "\n";
+            }
+            
+            excelFile.close();
+            cout << "\nSUCCESS: Exported to " << filename << "!\n";
+            cout << "You can now open this file directly in Microsoft Excel.\n";
+        } else {
+            cout << "Error creating Excel file.\n";
+        }
+    } else {
+        cout << "Invalid session number.\n";
+    }
+}
 // --- MAIN PROGRAM ---
 int main() {
     loadData(); // NEW: Load previous data when program starts!
@@ -286,6 +330,7 @@ int main() {
         cout << "4. View All Sessions\n";      
         cout << "5. Mark Attendance\n"; 
         cout << "6. View Attendance Report\n"; 
+        cout << "7. Export to Excel\n";
         cout << "0. Save & Exit\n"; // NEW: Notice the "Save & Exit" label
         cout << "Enter your choice: ";
         cin >> choice;
@@ -297,8 +342,9 @@ int main() {
             case 4: viewSessions(); break;  
             case 5: processAttendance(); break; 
             case 6: viewReport(); break; 
+            case 7: exportToExcel(); break;
             case 0: 
-                saveData(); // NEW: Save all data before exiting!
+                saveData(); // NEW: Save al
                 cout << "Exiting program. Goodbye!\n"; 
                 break;
             default: cout << "Invalid choice. Please try again.\n";
